@@ -1,5 +1,6 @@
 // Header.js
-import React from 'react';
+import React, { useEffect }  from 'react';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
@@ -7,21 +8,22 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
-import LoginModal from './LoginModal';
-import SignUpModal from './SignUpModal';
-import CreatePost from './createPost';
+import LoginModal from '../LoginModal';
+import SignUpModal from '../Register/SignUpModal';
 
 function Header(props) {
   const { sections, title } = props;
   const [isLoginModalOpen, setLoginModalOpen] = React.useState(false);
   const [isSignUpModalOpen, setSignUpModalOpen] = React.useState(false);
-  const [isCreatePostOpen, setIsCreatePostOpen] = React.useState(false);
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [userType, setUserType] = React.useState('');
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = () => {
     // Handle login logic (e.g., check credentials)
@@ -30,6 +32,8 @@ function Header(props) {
     setLoginModalOpen(false);
     // Set the user as logged in
     setLoggedIn(true);
+    // Store the login status in local storage
+    localStorage.setItem('isLoggedIn', 'true');
   };
 
   const handleLogout = () => {
@@ -37,12 +41,8 @@ function Header(props) {
     console.log('Logout clicked');
     // Set the user as logged out
     setLoggedIn(false);
-  };
-
-  const handleSignUp = () => {
-    // Handle sign-up logic (e.g., open registration form)
-    console.log('Sign Up clicked');
-    setSignUpModalOpen(true);
+    // Remove the login status from local storage
+    localStorage.removeItem('isLoggedIn');
   };
 
   const handleRegister = () => {
@@ -52,19 +52,26 @@ function Header(props) {
     setSignUpModalOpen(false);
   };
 
-  const handleCreatePostClick = () => {
-    setIsCreatePostOpen(true);
+  const handleCreatePostNavigate = () => {
+    navigate('/createPost');
   };
 
-  const handleCloseCreatePost = () => {
-    setIsCreatePostOpen(false);
-  };
+  useEffect(() => {
+    // Update buttons based on the current route or other conditions
+    console.log('Current route:', location.pathname);
+
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [location]);
 
   return (
     <React.Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Button size="small" onClick={handleSignUp}>
-          Subscribe
+      <Button size="small" onClick={() => navigate('/Blog')}>
+          Home
         </Button>
         <Typography
           component="h2"
@@ -81,7 +88,14 @@ function Header(props) {
         </IconButton>
         {isLoggedIn ? (
           <>
-            <Button variant="outlined" size="small" onClick={() => setIsCreatePostOpen(true)} sx={{ marginX: 1 }}>
+            <Button
+              variant="outlined"
+              size="small"
+              component={RouterLink}
+              to="/createPost"
+              sx={{ marginX: 1 }}
+              onClick={handleCreatePostNavigate}
+            >
               Create Post
             </Button>
             <Button variant="outlined" size="small" onClick={handleLogout} sx={{ marginX: 1 }}>
@@ -101,11 +115,12 @@ function Header(props) {
       >
         {sections.map((section) => (
           <Link
+            component={RouterLink}
             color="inherit"
             noWrap
             key={section.title}
             variant="body2"
-            href={section.url}
+            to={section.url}
             sx={{ p: 1, flexShrink: 0 }}
           >
             {section.title}
@@ -143,9 +158,7 @@ function Header(props) {
         lastName={lastName}
         setLastName={setLastName}
       />
-      {/* Create Post Modal */}
-      {isCreatePostOpen && <CreatePost onSubmit={handleCreatePostClick} onClose={handleCloseCreatePost} />}
-     </React.Fragment>  
+    </React.Fragment>
   );
 }
 

@@ -1,18 +1,17 @@
 import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BrowserRouter as Router, Route, Link, Switch, Routes } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Header from './Header';
+import Header from '../Header/Header';
 import MainFeaturedPost from './MainFeaturedPost';
 import FeaturedPost from './FeaturedPost';
 import Main from './Main';
-import Sidebar from './Sidebar';
-import Footer from './Footer';
+import Sidebar from '../SideBar/Sidebar';
+import Footer from '../Footer/Footer';
 import post1 from './blog-post.1.md';
 import post2 from './blog-post.2.md';
 import post3 from './blog-post.3.md';
@@ -87,35 +86,14 @@ const sidebar = {
 };
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
 
 export default function Blog() {
   return (
     <ThemeProvider theme={createTheme()}>
       <CssBaseline />
-      <Router>
         <Container maxWidth="lg">
           <Header title="Blog" sections={sections} />
           <main>
-            <Routes>
-              
-              <Route path="/technology" element={<h2>Technology Section</h2>} />
-              <Route path="/design" element={<h2>Design Section</h2>} />
-              <Route path="/academic-resources" element={<h2>Academic Resources</h2>} />
-              <Route path="/career-services" element={<h2>Career Services</h2>} />
-              <Route path="/campus" element={<h2>Campus Section</h2>} />
-              <Route path="/culture" element={<h2>Culture Section</h2>} />
-              <Route path="/local-community-resources" element={<h2>Local Community Resources Section</h2>} />
-              <Route path="/social" element={<h2>Social Section</h2>} />
-              <Route path="/sports" element={<h2>Sports Section</h2>} />
-              <Route path="/health-and-wellness" element={<h2>Health and Wellness Section</h2>} />
-              <Route path="/travel" element={<h2>Travel Section</h2>} />
-              <Route path="/alumni" element={<h2>Alumni Section</h2>} />
-
-              {/* Add more routes for other sections */}
-              <Route
-                path="/"
-                element={
                   <>
                     <MainFeaturedPost post={mainFeaturedPost} />
                     <Grid container spacing={4}>
@@ -133,12 +111,8 @@ export default function Blog() {
                       />
                     </Grid>
                   </>
-                }
-              />
-            </Routes>
           </main>
         </Container>
-      </Router>
       <Footer
         title="Footer"
         description="Something here to give the footer a purpose!"
